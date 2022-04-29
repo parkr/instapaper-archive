@@ -1,8 +1,8 @@
 on: push
 name: Build & test
 jobs:
-  buildAndTest:
-    name: Build & Test
+  buildAndTestDocker:
+    name: Build & Test Docker Image
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -10,3 +10,10 @@ jobs:
       uses: parkr/actions/docker-make@main
       with:
         args: docker-test -e REV=${{ github.sha }}
+  goTest:
+    name: Test (go)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v3
+      - run: go test -v ./...
