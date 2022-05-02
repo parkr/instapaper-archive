@@ -16,4 +16,5 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v3
+      - run: mkdir -p tmp
       - run: go test -v ./...
