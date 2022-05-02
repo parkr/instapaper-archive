@@ -15,6 +15,12 @@ import (
 
 var jekyllOutputWriterTestDir = filepath.Join("tmp", "jekyllOutputWriter")
 
+func init() {
+	if err := os.MkdirAll("tmp", 0755); err != nil {
+		log.Fatalf("error creating tmp: %v", err)
+	}
+}
+
 func cleanupTestTmpDir(dir string) {
 	if !strings.HasPrefix(dir, filepath.Join("tmp")) {
 		log.Printf("dir not in tmp: %q", dir)
