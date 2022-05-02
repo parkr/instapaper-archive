@@ -11,7 +11,7 @@ import (
 
 // Job - interface for job processing
 type Job interface {
-	Process()
+	Process() error
 }
 
 // Worker - the worker threads that actually process the jobs
@@ -35,7 +35,7 @@ type JobQueue struct {
 
 // NewJobQueue - creates a new job queue
 func NewJobQueue(maxWorkers int) *JobQueue {
-	workersStopped := sync.WaitGroup{}
+	workersStopped := sync.WaitGroup{} // TODO: convert to error
 	readyPool := make(chan chan Job, maxWorkers)
 	workers := make([]*Worker, maxWorkers, maxWorkers)
 	for i := 0; i < maxWorkers; i++ {
@@ -106,7 +106,7 @@ func (w *Worker) Start() {
 			w.readyPool <- w.assignedJobQueue // check the job queue in
 			select {
 			case job := <-w.assignedJobQueue: // see if anything has been assigned to the queue
-				job.Process()
+				_ = job.Process() // TODO: propagate error into errgroup
 			case <-w.quit:
 				w.done.Done()
 				return

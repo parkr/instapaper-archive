@@ -50,18 +50,9 @@ func newInstapaperClient(emailAddress, password string) (*instapaper.Client, err
 	return &apiClient, nil
 }
 
-func createInstapaperArchive(client instapaper.Client, directory string, exportCSVFileName string, queue *JobQueue) error {
-	// 0. Create directory
-	if err := os.MkdirAll(directory, 0755); err != nil {
-		return err
-	}
-	if err := os.MkdirAll(directory+"/_posts", 0755); err != nil {
-		return err
-	}
-	if err := os.MkdirAll(directory+"/_data", 0755); err != nil {
-		return err
-	}
-	if err := os.MkdirAll(directory+"/_mirror", 0755); err != nil {
+func createInstapaperArchive(client instapaper.Client, directory string, exportCSVFileName string, outputWriter OutputWriter, queue *JobQueue) error {
+	// 0. Create directories
+	if err := outputWriter.Preflight(); err != nil {
 		return err
 	}
 
@@ -101,6 +92,7 @@ func createInstapaperArchive(client instapaper.Client, directory string, exportC
 			APIClient:        &client,
 			BookmarkService:  &bookmarkService,
 			HighlightService: &highlightService,
+			OutputWriter:     outputWriter,
 		})
 	}
 
@@ -175,6 +167,8 @@ func main() {
 	flag.StringVar(&exportCSVFileName, "export-csv-file", "instapaper-export.csv", "The path to the instapaper export CSV")
 	var numWorkers int
 	flag.IntVar(&numWorkers, "workers", 10, "Number of workers")
+	var outputFormat string
+	flag.StringVar(&outputFormat, "format", "jekyll", "Archive format")
 	flag.Parse()
 
 	if password == "" {
@@ -193,11 +187,19 @@ func main() {
 		fatal("error creating instapaper client: %v", err)
 	}
 
+	var outputWriter OutputWriter
+	switch strings.ToLower(outputFormat) {
+	case "jekyll":
+		outputWriter = jekyllOutputWriter{Directory: directory}
+	default:
+		log.Fatalf("unsupported output format: %q", outputFormat)
+	}
+
 	queue := NewJobQueue(runtime.NumCPU())
 	queue.Start()
 	defer queue.Stop()
 
-	err = createInstapaperArchive(*apiClient, directory, exportCSVFileName, queue)
+	err = createInstapaperArchive(*apiClient, directory, exportCSVFileName, outputWriter, queue)
 	if err != nil {
 		fatal("error creating instapaper archive: %v", err)
 	}

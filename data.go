@@ -12,6 +12,8 @@ import (
 type bookmarkData struct {
 	Bookmark           *instapaper.Bookmark
 	BookmarkExportMeta *bookmarkExportMeta
+	Highlights         []instapaper.Highlight `json:"-"`
+	FullText           string                 `json:"-"`
 }
 
 type bookmarkExportMeta struct {
