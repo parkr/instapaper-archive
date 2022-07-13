@@ -4,6 +4,10 @@ on:
       - main
       - github-actions
 
+permissions:
+      contents: read
+      packages: write
+
 name: Publish on push to main
 jobs:
   publishDockerImage:
