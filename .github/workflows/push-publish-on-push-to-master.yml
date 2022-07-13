@@ -9,6 +9,9 @@ jobs:
   publishDockerImage:
     name: Publish Docker Image
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
     - uses: actions/checkout@v2
     - name: Login to Docker Registry
@@ -16,8 +19,8 @@ jobs:
       with:
         args: login
       env:
-        DOCKER_USERNAME: ${{ secrets.GPR_USERNAME }}
-        DOCKER_PASSWORD: ${{ secrets.GPR_PASSWORD }}
+        DOCKER_USERNAME: ${{ github.actor }}
+        DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
         DOCKER_REGISTRY_URL: ghcr.io
     - name: Build & publish
       uses: parkr/actions/docker-make@main
