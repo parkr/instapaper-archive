@@ -72,6 +72,7 @@ func (w jekyllOutputWriter) writeJekyllPost(bookmark bookmarkData) error {
 	buf.WriteString("---\n")
 	buf.WriteString("archive_id: \"" + bookmark.GetID() + "\"\n")
 	buf.WriteString("title: \"" + strings.ReplaceAll(bookmark.GetTitle(), `"`, `\"`) + "\"\n")
+	buf.WriteString("category: \"" + bookmark.ContainingFolder + "\"\n")
 	buf.WriteString("---\n\n")
 	if len(bookmark.FullText) > 0 {
 		buf.WriteString("{% raw %}\n")

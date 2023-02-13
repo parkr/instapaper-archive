@@ -14,6 +14,7 @@ type bookmarkData struct {
 	BookmarkExportMeta *bookmarkExportMeta
 	Highlights         []instapaper.Highlight `json:"-"`
 	FullText           string                 `json:"-"`
+	ContainingFolder   string
 }
 
 type bookmarkExportMeta struct {

@@ -116,7 +116,7 @@ func listBookmarksFromFolders(bookmarkService instapaper.BookmarkService, folder
 			if ok {
 				data.Bookmark = &bookmark
 			} else {
-				bookmarks[bookmark.URL] = &bookmarkData{Bookmark: &bookmark}
+				bookmarks[bookmark.URL] = &bookmarkData{Bookmark: &bookmark, ContainingFolder: folder.Slug}
 			}
 		}
 	}
@@ -149,6 +149,7 @@ func readBookmarksFromCSVExport(exportCSVFileName string) (map[string]*bookmarkD
 				Folder:    row[3],
 				Timestamp: row[4],
 			},
+			ContainingFolder: row[3],
 		}
 	}
 	return bookmarks, nil
