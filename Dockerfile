@@ -1,4 +1,4 @@
-FROM golang:1.20.5
+FROM golang:1.20.6
 
 WORKDIR /srv/instapaper-archive
 COPY . .
