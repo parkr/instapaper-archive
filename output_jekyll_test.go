@@ -83,8 +83,8 @@ func TestJekyllOutputWriter_Write(t *testing.T) {
 	// Now, verify.
 	fileContentsMatch(t, filepath.Join(w.Directory, "_data", "1234.json"), `"Title": "Title for the bookmark",`)
 	fileContentsMatch(t, filepath.Join(w.Directory, "_data", "1234.highlights.json"), `"Text": "Text of the highlight",`)
-	fileContentsMatch(t, filepath.Join(w.Directory, "_mirror", "1234.html"), "full text\n\nof an article")
-	fileContentsMatch(t, filepath.Join(w.Directory, "_posts", "2010-11-01-1234.html"), `archive_id: "1234"`)
-	fileContentsMatch(t, filepath.Join(w.Directory, "_posts", "2010-11-01-1234.html"), `category: "Books To Read"`)
-	fileContentsMatch(t, filepath.Join(w.Directory, "_posts", "2010-11-01-1234.html"), "{% raw %}\nfull text\n\nof an article")
+	fileContentsMatch(t, filepath.Join(w.Directory, "_mirror", "2010", "1234.html"), "full text\n\nof an article")
+	fileContentsMatch(t, filepath.Join(w.Directory, "_posts", "2010", "2010-11-01-1234.html"), `archive_id: "1234"`)
+	fileContentsMatch(t, filepath.Join(w.Directory, "_posts", "2010", "2010-11-01-1234.html"), `category: "Books To Read"`)
+	fileContentsMatch(t, filepath.Join(w.Directory, "_posts", "2010", "2010-11-01-1234.html"), "{% raw %}\nfull text\n\nof an article")
 }
