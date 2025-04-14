@@ -72,18 +72,26 @@ func (d bookmarkData) GetURL() string {
 	return "NO_URL"
 }
 
-func (d bookmarkData) GetYYYYMMDD() string {
+func (d bookmarkData) getTime() time.Time {
 	if d.Bookmark != nil && d.Bookmark.Time > 0 {
-		return time.Unix(int64(d.Bookmark.Time), 0).Format("2006-01-02")
+		return time.Unix(int64(d.Bookmark.Time), 0)
 	}
 	if d.BookmarkExportMeta != nil && d.BookmarkExportMeta.Timestamp != "" {
 		unix, err := strconv.Atoi(d.BookmarkExportMeta.Timestamp)
 		if err != nil {
-			return "2001-10-10" // error, Instapaper didn't exist then
+			return time.Date(2001, 10, 10, 0, 0, 0, 0, time.Now().Location()) // error, Instapaper didn't exist then
 		}
-		return time.Unix(int64(unix), 0).Format("2006-01-02")
+		return time.Unix(int64(unix), 0)
 	}
-	return "2000-01-01" // error, Instapaper didn't exist then
+	return time.Date(2000, 1, 1, 0, 0, 0, 0, time.Now().Location()) // error, Instapaper didn't exist then
+}
+
+func (d bookmarkData) GetYYYY() string {
+	return d.getTime().Format("2006")
+}
+
+func (d bookmarkData) GetYYYYMMDD() string {
+	return d.getTime().Format("2006-01-02")
 }
 
 func (d bookmarkData) String() string {
