@@ -64,9 +64,13 @@ func (w jekyllOutputWriter) writeJSONFile(bookmark bookmarkData) error {
 }
 
 func (w jekyllOutputWriter) writeJekyllPost(bookmark bookmarkData) error {
-	outputFilePath := filepath.Join(w.Directory, "_posts", fmt.Sprintf("%s-%s.html", bookmark.GetYYYYMMDD(), bookmark.GetID()))
+	outputFilePath := filepath.Join(
+		w.Directory, "_posts", bookmark.GetYYYY(), fmt.Sprintf("%s-%s.html", bookmark.GetYYYYMMDD(), bookmark.GetID()))
 	if fileExists(outputFilePath) {
 		return nil
+	}
+	if err := os.MkdirAll(filepath.Dir(outputFilePath), 0755); err != nil {
+		return err
 	}
 	var buf bytes.Buffer
 	buf.WriteString("---\n")
@@ -80,7 +84,7 @@ func (w jekyllOutputWriter) writeJekyllPost(bookmark bookmarkData) error {
 		buf.WriteString("\n")
 		buf.WriteString("{% endraw %}\n")
 	}
-	return ioutil.WriteFile(outputFilePath, buf.Bytes(), 0644)
+	return os.WriteFile(outputFilePath, buf.Bytes(), 0644)
 }
 
 func (w jekyllOutputWriter) writeTextFile(bookmark bookmarkData) error {
@@ -88,11 +92,15 @@ func (w jekyllOutputWriter) writeTextFile(bookmark bookmarkData) error {
 		return nil
 	}
 
-	outputFilePath := filepath.Join(w.Directory, "_mirror", fmt.Sprintf("%s.html", bookmark.GetID()))
+	outputFilePath := filepath.Join(
+		w.Directory, "_mirror", bookmark.GetYYYY(), fmt.Sprintf("%s.html", bookmark.GetID()))
 	if fileExists(outputFilePath) {
 		return nil
 	}
-	return ioutil.WriteFile(outputFilePath, []byte(bookmark.FullText), 0644)
+	if err := os.MkdirAll(filepath.Dir(outputFilePath), 0755); err != nil {
+		return err
+	}
+	return os.WriteFile(outputFilePath, []byte(bookmark.FullText), 0644)
 }
 
 func (w jekyllOutputWriter) writeHighlightsFile(bookmark bookmarkData) error {
@@ -108,5 +116,5 @@ func (w jekyllOutputWriter) writeHighlightsFile(bookmark bookmarkData) error {
 	if err != nil {
 		return err
 	}
-	return ioutil.WriteFile(outputFilePath, data, 0644)
+	return os.WriteFile(outputFilePath, data, 0644)
 }
